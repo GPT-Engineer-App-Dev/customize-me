@@ -1,66 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const TestPage = () => {
-  const [count, setCount] = useState(0);
-  const [inputValue, setInputValue] = useState('');
-  const [items, setItems] = useState([]);
+const EstTest = () => {
+  const [hours, setHours] = useState("");
+  const [rate, setRate] = useState("");
+  const [estimate, setEstimate] = useState(null);
 
-  useEffect(() => {
-    document.title = `Count: ${count}`;
-  }, [count]);
-
-  const handleIncrement = () => {
-    setCount(prevCount => prevCount + 1);
-  };
-
-  const handleAddItem = (e) => {
+  const calculateEstimate = (e) => {
     e.preventDefault();
-    if (inputValue.trim()) {
-      setItems(prevItems => [...prevItems, inputValue.trim()]);
-      setInputValue('');
-    }
+    const totalEstimate = parseFloat(hours) * parseFloat(rate);
+    setEstimate(isNaN(totalEstimate) ? null : totalEstimate.toFixed(2));
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Test Page</h1>
-
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Counter</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-2">Count: {count}</p>
-          <Button onClick={handleIncrement}>Increment</Button>
-        </CardContent>
-      </Card>
-
+      <h1 className="text-3xl font-bold mb-6">Estimation Test</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Item List</CardTitle>
+          <CardTitle>Project Cost Estimator</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAddItem} className="flex gap-2 mb-4">
-            <Input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter an item"
-            />
-            <Button type="submit">Add Item</Button>
+          <form onSubmit={calculateEstimate} className="space-y-4">
+            <div>
+              <Label htmlFor="hours">Estimated Hours</Label>
+              <Input
+                id="hours"
+                type="number"
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="Enter estimated hours"
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Label htmlFor="rate">Hourly Rate ($)</Label>
+              <Input
+                id="rate"
+                type="number"
+                value={rate}
+                onChange={(e) => setRate(e.target.value)}
+                placeholder="Enter hourly rate"
+                className="w-full"
+              />
+            </div>
+            <Button type="submit">Calculate Estimate</Button>
           </form>
-          <ul className="list-disc pl-5">
-            {items.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
+          {estimate !== null && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold">Estimated Cost</h2>
+              <p className="text-2xl font-bold text-green-600">${estimate}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default TestPage;
+export default EstTest;
